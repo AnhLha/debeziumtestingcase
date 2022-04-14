@@ -84,6 +84,11 @@
 
     .query {
       background: #49cc90;
+      cursor: grab;
+    }
+
+    .query:active {
+      transform: scale(0.9);
     }
 
     .case {
@@ -91,6 +96,10 @@
     }
 
     .input-container-line {
+      margin: 0px 0px 15px 0px;
+    }
+
+    .button-container-line {
       margin: 0px 0px 15px 0px;
     }
 
@@ -106,13 +115,26 @@
       .then(data => console.log(data));
   }
 
+  function runTransactionLocal(sqls) {
+    fetch(`http://localhost:3000/transactionLocal?query=${sqls}`)
+      .then(response => response.json())
+      .then(data => console.log(data));
+  }
+
   function runQueryRemote(sql) {
     fetch(`http://localhost:3000/queryRemote?query=${sql}`)
       .then(response => response.json())
       .then(data => console.log(data));
   }
 
-  function sync(target, source){
+  function runTransactionRemote(sqls) {
+    fetch(`http://localhost:3000/transactionRemote?query=${sqls}`)
+      .then(response => response.json())
+      .then(data => console.log(data));
+  }
+
+
+  function sync(target, source) {
     document.getElementById(source).value = document.getElementById(target).value;
   }
 </script>
@@ -258,16 +280,13 @@
           </div>
         </div>
         <div class="button-container">
-          <div class="button query" onclick="runQueryLocal('start TRANSACTION;'+
-            'insert into debeziumdb.user ' +
-              'values('+document.getElementById('c71id').value+',\''+document.getElementById('c71name').value+'\','+document.getElementById('c71age').value+'),'+
-              '('+document.getElementById('c72id').value+',\''+document.getElementById('c72name').value+'\','+document.getElementById('c72age').value+'),'+
-              '('+document.getElementById('c73id').value+',\''+document.getElementById('c73name').value+'\','+document.getElementById('c73age').value+'),'+
-              '('+document.getElementById('c74id').value+',\''+document.getElementById('c74name').value+'\','+document.getElementById('c74age').value+'),'+
-              '('+document.getElementById('c75id').value+',\''+document.getElementById('c75name').value+'\','+document.getElementById('c75age').value+');'+
-              // 'rollback;'
-              'commit;')"
-              >
+          <div class="button query" onclick="runTransactionLocal(
+            'insert into debeziumdb.user values('+document.getElementById('c71id').value+',\''+document.getElementById('c71name').value+'\','+document.getElementById('c71age').value+')*'+
+            'insert into debeziumdb.user values('+document.getElementById('c72id').value+',\''+document.getElementById('c72name').value+'\','+document.getElementById('c72age').value+')*'+
+            'insert into debeziumdb.user values('+document.getElementById('c73id').value+',\''+document.getElementById('c73name').value+'\','+document.getElementById('c73age').value+')*'+
+            'insert into debeziumdb.user values('+document.getElementById('c74id').value+',\''+document.getElementById('c74name').value+'\','+document.getElementById('c74age').value+')*'+
+            'insert into debeziumdb.user values('+document.getElementById('c75id').value+',\''+document.getElementById('c75name').value+'\','+document.getElementById('c75age').value+')'
+          )">
             Run transaction</div>
         </div>
       </div>
@@ -281,11 +300,8 @@
           <input type="text" id="c81name" class="input" placeholder="Input Name">
         </div>
         <div class="button-container">
-          <div class="button query" onclick="runQueryLocal('start TRANSACTION;'+
-            'update debeziumdb.user' +
-              'set name = \''+ document.getElementById('c81name').value +'\''+
-              'where id > '+document.getElementById('c81id').value+';'+
-              'rollback;')">
+          <div class="button query"
+            onclick="runTransactionLocal('UPDATE `debeziumdb`.`user` set name = \''+ document.getElementById('c81name').value +'\' where id > '+document.getElementById('c81id').value+'')">
             Run transaction</div>
         </div>
       </div>
@@ -298,10 +314,8 @@
           <input type="number" id="c91id" class="input" placeholder="Input ID">
         </div>
         <div class="button-container">
-          <div class="button query" onclick="runQueryLocal('start TRANSACTION;'+
-            'delete debeziumdb.user' +
-              'where id > '+document.getElementById('c91id').value+';'+
-              'rollback;')">
+          <div class="button query"
+            onclick="runTransactionLocal('delete from debeziumdb.user where id > '+document.getElementById('c91id').value+'')">
             Run transaction</div>
         </div>
       </div>
@@ -347,12 +361,16 @@
         </div>
       </div>
       <div class="button-container">
-        <div class="button query"
-          onclick="runQueryRemote('delete from debeziumdb.userwhere id > '+document.getElementById('e21id').value+');')">
-          Delete to Target DB</div>
-        <div class="button query"
-          onclick="runQueryLocal('UPDATE `debeziumdb`.`user` SET `name` = \''+document.getElementById('e22name').value+'\' WHERE (`id` = '+document.getElementById('e22id').value+');');">
-          Update to Source DB</div>
+        <div class="button-container-line">
+          <div class="button query"
+            onclick="runQueryRemote('delete from debeziumdb.user where id > '+document.getElementById('e21id').value+'')">
+            Delete to Target DB</div>
+        </div>
+        <div class="button-container-line">
+          <div class="button query"
+            onclick="runQueryLocal('UPDATE `debeziumdb`.`user` SET `name` = \''+document.getElementById('e22name').value+'\' WHERE (`id` = '+document.getElementById('e22id').value+');');">
+            Update to Source DB</div>
+        </div>
       </div>
     </div>
 
@@ -374,12 +392,16 @@
         </div>
       </div>
       <div class="button-container">
-        <div class="button query"
-          onclick="runQueryRemote('UPDATE `debeziumdb`.`user` SET `name` = \''+document.getElementById('e31name').value+'\' WHERE (`id` = '+document.getElementById('e31id').value+');');">
-          Update to Target DB</div>
-        <div class="button query"
-          onclick="runQueryLocal('UPDATE `debeziumdb`.`user` SET `name` = \''+document.getElementById('e32name').value+'\' WHERE (`id` = '+document.getElementById('e32id').value+');');">
-          Update to Source DB</div>
+        <div class="button-container-line">
+          <div class="button query"
+            onclick="runQueryRemote('UPDATE `debeziumdb`.`user` SET `name` = \''+document.getElementById('e31name').value+'\' WHERE (`id` = '+document.getElementById('e31id').value+');');">
+            Update to Target DB</div>
+        </div>
+        <div class="button-container-line">
+          <div class="button query"
+            onclick="runQueryLocal('UPDATE `debeziumdb`.`user` SET `name` = \''+document.getElementById('e32name').value+'\' WHERE (`id` = '+document.getElementById('e32id').value+');');">
+            Update to Source DB</div>
+        </div>
       </div>
     </div>
 
@@ -394,7 +416,7 @@
         <div class="input-container-line">
           <input type="number" id="e41id" class="input" placeholder="Input ID" oninput="sync('e41id','e42id')">
           <input type="text" id="e41name" class="input" placeholder="Input Name"">
-          <input type="number" id="e41age" class="input" placeholder="Input Age">
+          <input type=" number" id="e41age" class="input" placeholder="Input Age">
         </div>
         <div class="input-container-line">
           <input type="number" id="e42id" class="input" placeholder="Input ID" readonly>
@@ -403,12 +425,16 @@
         </div>
       </div>
       <div class="button-container">
-        <div class="button query"
-          onclick="runQueryRemote('insert into debeziumdb.user values('+document.getElementById('e41id').value+',\''+document.getElementById('e41name').value+'\','+document.getElementById('e41age').value+');');">
-          Add to Target DB</div>
-        <div class="button query"
-          onclick="runQueryLocal('insert into debeziumdb.user values('+document.getElementById('e42id').value+',\''+document.getElementById('e42name').value+'\','+document.getElementById('e42age').value+');');">
-          Add to Source DB</div>
+        <div class="button-container-line">
+          <div class="button query"
+            onclick="runQueryRemote('insert into debeziumdb.user values('+document.getElementById('e41id').value+',\''+document.getElementById('e41name').value+'\','+document.getElementById('e41age').value+');');">
+            Add to Target DB</div>
+        </div>
+        <div class="button-container-line">
+          <div class="button query"
+            onclick="runQueryLocal('insert into debeziumdb.user values('+document.getElementById('e42id').value+',\''+document.getElementById('e42name').value+'\','+document.getElementById('e42age').value+');');">
+            Add to Source DB</div>
+        </div>
       </div>
     </div>
 
@@ -421,9 +447,9 @@
         <p>Check what happen to [Target] Table</p>
       </div>
       <div class="input-container">
-          <input type="number" id="e51id" class="input" placeholder="Input ID">
-          <input type="text" id="e51name" class="input" placeholder="Input Name">
-          <input type="number" id="e51age" class="input" placeholder="Input Age">
+        <input type="number" id="e51id" class="input" placeholder="Input ID">
+        <input type="text" id="e51name" class="input" placeholder="Input Name">
+        <input type="number" id="e51age" class="input" placeholder="Input Age">
       </div>
       <div class="button-container">
         <div class="button query"
@@ -441,9 +467,9 @@
         <p>Check what happen to [Target] Table</p>
       </div>
       <div class="input-container">
-          <input type="number" id="e61id" class="input" placeholder="Input ID">
-          <input type="text" id="e61name" class="input" placeholder="Input Name">
-          <input type="number" id="e61age" class="input" placeholder="Input Age">
+        <input type="number" id="e61id" class="input" placeholder="Input ID">
+        <input type="text" id="e61name" class="input" placeholder="Input Name">
+        <input type="number" id="e61age" class="input" placeholder="Input Age">
       </div>
       <div class="button-container">
         <div class="button query"

@@ -30,16 +30,16 @@ const port = 3000;
 const connectionLocal = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password:'root',
+    password: 'root',
     database: 'debeziumdb'
-  });
+});
 
 const connectionRemote = mysql.createConnection({
     host: '18.132.196.73',
     user: 'kelvin.vuminh',
-    password:'abc13579',
+    password: 'abc13579',
     database: 'debeziumdb'
-  });
+});
 
 const queryLocal = function (sql) {
     connectionLocal.query(
@@ -52,6 +52,19 @@ const queryLocal = function (sql) {
     );
 }
 
+const transactionLocal = function (sqls) {
+    connectionLocal.beginTransaction(function (err) {
+        if (err) {
+            throw err;
+        }
+        for (const key in sqls) {
+            connectionLocal.query(sqls[key]);
+        }
+        connectionLocal.rollback();
+    });
+}
+
+
 const queryRemote = function (sql) {
     connectionRemote.query(
         sql,
@@ -61,6 +74,18 @@ const queryRemote = function (sql) {
             console.log("result Remote", fields); // fields contains extra meta data about results, if available
         }
     );
+}
+
+const transactionRemote= function (sqls) {
+    queryRemote.beginTransaction(function (err) {
+        if (err) {
+            throw err;
+        }
+        for (const sql in sqls) {
+            queryRemote.query(sql);
+        }
+        connectionLocal.rollback();
+    });
 }
 
 app.get('/', function (req, res) {
@@ -75,7 +100,21 @@ app.get('/queryLocal', function (req, res) {
         queryLocal(req.query.query);
     } catch (e) {
         res.send({
-            "message": "some error"+e.toString()
+            "message": "some error" + e.toString()
+        });
+    }
+    res.send({
+        "message": "success"
+    });
+});
+
+app.get('/transactionLocal', function (req, res) {
+    console.log("param", req.query.query);
+    try {
+        transactionLocal(req.query.query.split('*'));
+    } catch (e) {
+        res.send({
+            "message": "some error" + e.toString()
         });
     }
     res.send({
@@ -89,7 +128,21 @@ app.get('/queryRemote', function (req, res) {
         queryRemote(req.query.query);
     } catch (e) {
         res.send({
-            "message": "some error"+e.toString()
+            "message": "some error" + e.toString()
+        });
+    }
+    res.send({
+        "message": "success"
+    });
+});
+
+app.get('/transactionRemote', function (req, res) {
+    console.log("param", req.query.query);
+    try {
+        transactionRemote(req.query.query);
+    } catch (e) {
+        res.send({
+            "message": "some error" + e.toString()
         });
     }
     res.send({
