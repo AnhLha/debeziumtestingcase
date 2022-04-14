@@ -281,11 +281,11 @@
         </div>
         <div class="button-container">
           <div class="button query" onclick="runTransactionLocal(
-            'insert into debeziumdb.user values('+document.getElementById('c71id').value+',\''+document.getElementById('c71name').value+'\','+document.getElementById('c71age').value+')*'+
-            'insert into debeziumdb.user values('+document.getElementById('c72id').value+',\''+document.getElementById('c72name').value+'\','+document.getElementById('c72age').value+')*'+
-            'insert into debeziumdb.user values('+document.getElementById('c73id').value+',\''+document.getElementById('c73name').value+'\','+document.getElementById('c73age').value+')*'+
-            'insert into debeziumdb.user values('+document.getElementById('c74id').value+',\''+document.getElementById('c74name').value+'\','+document.getElementById('c74age').value+')*'+
-            'insert into debeziumdb.user values('+document.getElementById('c75id').value+',\''+document.getElementById('c75name').value+'\','+document.getElementById('c75age').value+')'
+            'insert into debeziumdb.user values('+document.getElementById('c71id').value+',\''+document.getElementById('c71name').value+'\','+document.getElementById('c71age').value+'),'+
+            '('+document.getElementById('c72id').value+',\''+document.getElementById('c72name').value+'\','+document.getElementById('c72age').value+'),'+
+            '('+document.getElementById('c73id').value+',\''+document.getElementById('c73name').value+'\','+document.getElementById('c73age').value+'),'+
+            '('+document.getElementById('c74id').value+',\''+document.getElementById('c74name').value+'\','+document.getElementById('c74age').value+'),'+
+            '('+document.getElementById('c75id').value+',\''+document.getElementById('c75name').value+'\','+document.getElementById('c75age').value+');'
           )">
             Run transaction</div>
         </div>
