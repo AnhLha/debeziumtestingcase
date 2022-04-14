@@ -363,7 +363,7 @@
       <div class="button-container">
         <div class="button-container-line">
           <div class="button query"
-            onclick="runQueryRemote('delete from debeziumdb.user where id > '+document.getElementById('e21id').value+'')">
+            onclick="runQueryRemote('delete from debeziumdb.user where id = '+document.getElementById('e21id').value+'')">
             Delete to Target DB</div>
         </div>
         <div class="button-container-line">
@@ -388,7 +388,7 @@
         </div>
         <div class="input-container-line">
           <input type="number" id="e32id" class="input" placeholder="Input ID" readonly>
-          <input type="text" id="e32name" class="input" placeholder="Input Name" readonly>
+          <input type="text" id="e32name" class="input" placeholder="Input Name" >
         </div>
       </div>
       <div class="button-container">
@@ -427,7 +427,7 @@
       <div class="button-container">
         <div class="button-container-line">
           <div class="button query"
-            onclick="runQueryRemote('insert into debeziumdb.user values('+document.getElementById('e41id').value+',\''+document.getElementById('e41name').value+'\','+document.getElementById('e41age').value+');');">
+            onclick="runQueryRemote('insert into debeziumdb.user values('+document.getElementById('e41id').value+',\''+document.getElementById('e41name').value+'\','+document.getElementById('e41age').value+',\'false\');');">
             Add to Target DB</div>
         </div>
         <div class="button-container-line">
@@ -461,9 +461,9 @@
     <div class="child">
       <div class="button case">Case 6</div>
       <div class="description">
-        <p>Shutdown the kafka server</p>
+        <p>Shutdown the connectorr</p>
         <p>Make some changes in [Source] Table </p>
-        <p>Switch on the kafka server</p>
+        <p>Switch on the connectorr</p>
         <p>Check what happen to [Target] Table</p>
       </div>
       <div class="input-container">
