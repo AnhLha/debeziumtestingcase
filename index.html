@@ -115,6 +115,13 @@
       .then(data => console.log(data));
   }
 
+  
+  function runLoadTest(numbers, name, age){
+    console.log("run load test",numbers, name, age)
+    fetch(`http://localhost:3000/loadTest?numbers=${numbers}&name=${name}&age=${age}`)
+    .then(response => response.json())
+  }
+
   function runTransactionLocal(sqls) {
     fetch(`http://localhost:3000/transactionLocal?query=${sqls}`)
       .then(response => response.json())
@@ -137,6 +144,7 @@
   function sync(target, source) {
     document.getElementById(source).value = document.getElementById(target).value;
   }
+
 </script>
 
 <body>
@@ -478,6 +486,25 @@
       </div>
     </div>
 
+    <h1>Debezium Load Test</h1>
+
+    <div class="child">
+      <div class="description">
+        <p>Simultaneously add a number of records to the database</p>
+      </div>
+      <div class="input-container">
+        <input type="number" id="debloadtestnum" class="input" placeholder="Enter the number of records">
+        <input type="text" id="debloadtestname" class="input" placeholder="Input Name">
+        <input type="number" id="debloadtestage" class="input" placeholder="Input Age">
+      </div>
+      <div class="button-container">
+        <!-- <div class="button query"
+          onclick="runQueryLocal('insert into debeziumdb.user values('+document.getElementById('e61id').value+',\''+document.getElementById('e61name').value+'\','+document.getElementById('e61age').value+');');"> -->
+        <div class="button query"
+        onclick="runLoadTest(document.getElementById('debloadtestnum').value,document.getElementById('debloadtestname').value,document.getElementById('debloadtestage').value);">
+          Add a number of records to Source DB</div>
+      </div>
+    </div>
   </div>
 </body>
 

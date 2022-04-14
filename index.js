@@ -52,6 +52,10 @@ const queryLocal = function (sql) {
     );
 }
 
+const loadTest = function(numbers, name, age){
+    console.log(numbers, name, age)
+}
+
 const transactionLocal = function (sqls) {
     connectionLocal.beginTransaction(function (err) {
         if (err) {
@@ -107,6 +111,20 @@ app.get('/queryLocal', function (req, res) {
         "message": "success"
     });
 });
+
+app.get('/loadTest', function(req, res){
+    console.log("param loadtest ",req.query)
+    try{
+        loadTest(req.query.numbers, req.query.name, req.query.age);
+    }catch(e){
+        res.send({
+            "message": "load test error" + e.toString()
+        });
+    }
+    res.send({
+        "message": "load test success"
+    });
+})
 
 app.get('/transactionLocal', function (req, res) {
     console.log("param", req.query.query);
