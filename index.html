@@ -218,11 +218,11 @@
         <div class="button case">Case 6</div>
         <div class="description">Delete multiple records in [Source] table successfully: </div>
         <div class="input-container">
-          <input type="number" id="c61id" class="input" placeholder="Input ID">
+          <input type="number" id="c61id" class="input" placeholder="Input ID Greater than">
         </div>
         <div class="button-container">
           <div class="button query"
-            onclick="runQueryLocal('delete from debeziumdb.userwhere id > '+document.getElementById('c61id').value+');')">
+            onclick="runQueryLocal('delete from debeziumdb.user where id > '+document.getElementById('c61id').value+';')">
             Delete to Source DB</div>
         </div>
       </div>
@@ -259,13 +259,15 @@
         </div>
         <div class="button-container">
           <div class="button query" onclick="runQueryLocal('start TRANSACTION;'+
-            'insert into debeziumdb.user' +
+            'insert into debeziumdb.user ' +
               'values('+document.getElementById('c71id').value+',\''+document.getElementById('c71name').value+'\','+document.getElementById('c71age').value+'),'+
-              'values('+document.getElementById('c72id').value+',\''+document.getElementById('c72name').value+'\','+document.getElementById('c72age').value+'),'+
-              'values('+document.getElementById('c73id').value+',\''+document.getElementById('c73name').value+'\','+document.getElementById('c73age').value+'),'+
-              'values('+document.getElementById('c74id').value+',\''+document.getElementById('c74name').value+'\','+document.getElementById('c74age').value+'),'+
-              'values('+document.getElementById('c75id').value+',\''+document.getElementById('c75name').value+'\','+document.getElementById('c75age').value+'),'+
-              'rollback;')">
+              '('+document.getElementById('c72id').value+',\''+document.getElementById('c72name').value+'\','+document.getElementById('c72age').value+'),'+
+              '('+document.getElementById('c73id').value+',\''+document.getElementById('c73name').value+'\','+document.getElementById('c73age').value+'),'+
+              '('+document.getElementById('c74id').value+',\''+document.getElementById('c74name').value+'\','+document.getElementById('c74age').value+'),'+
+              '('+document.getElementById('c75id').value+',\''+document.getElementById('c75name').value+'\','+document.getElementById('c75age').value+');'+
+              // 'rollback;'
+              'commit;')"
+              >
             Run transaction</div>
         </div>
       </div>
